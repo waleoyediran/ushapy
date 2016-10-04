@@ -236,7 +236,7 @@ def add_report_to_platform(mapurl, title, description, lat, lon, location, categ
         'incident_minute': time.strftime('%M', now), \
         'incident_ampm': time.strftime('%p', now).lower(), \
         'location_name': location, \
-        };
+        }
 
     # Treat reports with images attached slightly differently
     if photoname == "":
