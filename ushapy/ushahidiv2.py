@@ -218,6 +218,7 @@ Parameters:
 
 
 def add_report_to_platform(mapurl, title, description, lat, lon, location, categories,
+                           person_first, person_last, person_email,
                            photopath="", photoname="", newreport=True):
     # format if you have custom formfields yourself
     now = time.gmtime();
@@ -225,7 +226,7 @@ def add_report_to_platform(mapurl, title, description, lat, lon, location, categ
         'task': 'report', \
         'incident_title': title, \
         'incident_description': description, \
-        'incident_category': cats_to_catids(mapurl, categories), \
+        'incident_category': categories, \
         'latitude': lat, \
         'longitude': lon, \
         # 'Url': mapurl, \
@@ -237,13 +238,19 @@ def add_report_to_platform(mapurl, title, description, lat, lon, location, categ
         'incident_ampm': time.strftime('%p', now).lower(), \
         'location_name': location, \
         }
+    if person_first:
+        payload['person_first'] = person_first
+    if person_last:
+        payload['person_last'] = person_last
+    if person_email:
+        payload['person_email'] = person_email
 
     # Treat reports with images attached slightly differently
-    if photoname == "":
+    if photopath == "":
         r = requests.post(mapurl + "api", data=payload);
     else:
-        payload['incident_photo[]'] = "@" + photoname + ";filename=" + photoname + ";type=image/jpeg";
-        imagefiles = {photoname: open(photoname, 'rb')};
+        payload['incident_photo[]'] = "@" + photoname + ";filename=" + photoname + ";type=image/jpeg"
+        imagefiles = {photoname: open(photopath, 'rb')}
         r = requests.post(mapurl + "api", data=payload, files=imagefiles);
 
     return (r)
